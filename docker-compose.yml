@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  # The PostgreSQL database server
+  postgres:
+    image: postgres:16-alpine          # Use the lightweight Alpine version
+    container_name: smartretail_db
+    environment:
+      POSTGRES_DB: smartretail          # Creates this database automatically
+      POSTGRES_USER: smartretail_user   # Creates this user automatically
+      POSTGRES_PASSWORD: smartretail_pass_2024
+    ports:
+      - "5432:5432"                     # Maps container port 5432 to your machine's 5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data   # Persistent storage — data survives restarts
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql  # Auto-runs on first start
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U smartretail_user -d smartretail"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # pgAdmin — a visual web interface to browse the database
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: smartretail_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@smartretail.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "5050:80"                       # Access pgAdmin at http://localhost:5050
+    depends_on:
+      postgres:
+        condition: service_healthy      # Only starts after PostgreSQL is healthy
+
+# Named volume — Docker manages this storage on your machine
+volumes:
+  postgres_data:

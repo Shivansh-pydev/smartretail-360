@@ -1,0 +1,30 @@
+# Virtual environment — never commit this
+venv/
+
+# Secret configuration — never commit this
+.env
+
+# Data files — too large for Git
+data/raw/
+data/processed/
+data/embeddings/
+
+# Python cache files — generated automatically, not needed
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# MLflow runs — can be large
+mlruns/
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE settings
+.vscode/settings.json
+.idea/
